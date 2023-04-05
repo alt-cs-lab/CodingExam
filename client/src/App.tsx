@@ -1,5 +1,6 @@
 // Copyright 2022 under MIT License
 import React from "react"
+import { socket } from "./socket"
 import { batch } from "react-redux"
 import styled from "styled-components"
 import { useAppDispatch } from "./app/hooks"

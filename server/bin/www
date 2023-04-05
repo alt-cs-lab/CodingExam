@@ -11,6 +11,7 @@ const http = require( "http" )
 const knex = require( "knex" )
 const pg = require( "pg" )
 const knexConfig = require( "../knexfile" )
+const { Server } = require( "socket.io" )
 
 
 // Run the startup function
@@ -61,10 +62,15 @@ async function startup() {
    */
 
 	const server = http.createServer( app )
+	const io = new Server( server )
 
 	/**
    * Listen on provided port, on all network interfaces.
    */
+
+	io.on( "connection", ( socket ) => {
+		console.log( "a user connected" )
+	} )
 
 	server.listen( port )
 	server.on( "error", onError )
