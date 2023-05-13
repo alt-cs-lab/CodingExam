@@ -315,6 +315,7 @@ async function autoGrade( knex, userId, assignmentId ) {
 		.leftJoin( "exams", "exams.id", "exam_questions.exam_id" )
 		.leftJoin( "question_types", "question_types.id", "exam_questions.question_type_id" )
 		.where( "exams.canvas_assignment_id", assignmentId )
+		.orderBy( "exam_questions.id" )
 	
 	// We need to 'rehydrate' questions that have answer data 
 	// and also limit what data is available depending on user role
@@ -359,13 +360,14 @@ async function autoGrade( knex, userId, assignmentId ) {
 	questions.forEach( question => {
 		let score = 0
 		const submission = submissionsMap.get( question.id )
-
-		if ( question.type === 1 || question.type === 3 ) {
-			if ( submission.answer_response == question.correctAnswer ){
-				score = question.points_possible
+		if ( submission ) {
+			if ( question.type === 1 || question.type === 3 ) {
+				if ( submission.answer_response == question.correctAnswer ){
+					score = question.points_possible
+				}
 			}
+			scoresMap.set( submission.studentResponsesId, score )
 		}
-		scoresMap.set( submission.studentResponsesId, score )
 	} )
 
 	// Iterate through the new scores in the map and update them accordingly
